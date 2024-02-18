@@ -43,9 +43,9 @@ app.post("/pastebin", async (req, res) => {
     try {
         const id = req.body?.id;
         const text =
-            req.body?.text?.length > 3500
-                ? req.body?.text.substring(0, 3500)
-                : req.body?.text;
+            (req.body?.text ?? "").length > 3500
+                ? req.body?.text.trim().substring(0, 3500).trim()
+                : req.body?.text.trim();
         if (id) {
             await Pastebin.updateOne({ _id: id }, { text });
             res.redirect(`/saved/${id}`);
