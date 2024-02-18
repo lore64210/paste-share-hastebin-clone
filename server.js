@@ -32,6 +32,10 @@ app.get("/saved/:id", async (req, res) => {
     if (!pastebin) {
         res.redirect("/");
     }
+    await Pastebin.updateOne(
+        { _id: id },
+        { visitCount: pastebin.visitCount + 1, lastVisited: Date.now() }
+    );
     res.render("index", { pastebin: pastebin.text, id: pastebin._id });
 });
 
@@ -54,5 +58,23 @@ app.post("/pastebin", async (req, res) => {
         res.redirect("/");
     }
 });
+
+const cron = require("node-cron");
+async function deleteUnvisited() {
+    try {
+        console.log("Cron job executed at:", new Date().toLocaleString());
+        const limit = new Date();
+        limit.setMonth(limit.getMonth() - 1);
+        const results = await Pastebin.deleteMany({
+            lastVisited: { $lt: limit },
+        });
+        console.log(results);
+    } catch (e) {
+        console.error(e.message);
+    }
+}
+
+//cron.schedule("* * * * *", () => deleteUnvisited()); //every minute for debug
+cron.schedule("0 6 * * *", () => deleteUnvisited()); // 6am everyday
 
 app.listen(process.env.PORT || 5000);

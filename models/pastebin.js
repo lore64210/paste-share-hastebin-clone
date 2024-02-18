@@ -8,7 +8,18 @@ const Pastebin = mongoose.Schema({
     creationTime: {
         type: Date,
         required: true,
+        immutable: true,
         default: Date.now(),
+    },
+    lastVisited: {
+        type: Date,
+        required: true,
+        default: Date.now(),
+    },
+    visitCount: {
+        type: Number,
+        required: true,
+        default: 1,
     },
 });
 
