@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            name="description"
+            content="Page to copy/paste your text, so you can share the url with anybody you want"
+        />
+        <title>Paste & Share</title>
+        <link rel="stylesheet" href="/css/styles.css" />
+    </head>
+    <body>
+        <form action="/pastebin" method="POST">
+            <div class="header">
+                <h1>Paste & Share</h1>
+                <div class="button-container">
+                    <button type="submit">Guardar texto</button>
+                    <button type="button" onclick="copyText()">
+                        Copiar texto
+                    </button>
+                </div>
+            </div>
+            <textarea maxlength="3500" name="text" class="auto-height">
+<%=pastebin%></textarea
+            >
+            <% if(id){ %>
+            <input type="hidden" name="id" value="<%=id%>" />
+            <% } %>
+        </form>
+        <script>
+            function copyText() {
+                let copyText = document.getElementsByTagName("textarea")[0];
+                copyText.select();
+                copyText.setSelectionRange(0, 99999); // For mobile devices
+                navigator.clipboard.writeText(copyText.value);
+                const message = document.createElement("div");
+                message.className = "message";
+                message.textContent = "Mensaje copiado en portapapeles";
+                document.body.appendChild(message);
+                setTimeout(() => {
+                    message.remove();
+                }, 3000);
+            }
+        </script>
+    </body>
+</html>
